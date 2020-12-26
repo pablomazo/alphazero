@@ -92,7 +92,6 @@ class MCTS:
 
     def Uval(self, children):
         cpuct = 1e-4
-        cpuct = 1e-1
         Nall = 0
         U = []
         for child in children:
@@ -108,6 +107,6 @@ class MCTS:
 
     def explore(self, state):
         for igame in range(self.ngames):
-            self.player = state.player
+            self.player = state.player * -1
             hist, v = self.select(state)
             self.backup(hist, v)
