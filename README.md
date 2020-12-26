@@ -7,4 +7,4 @@ Implementation of AlphaZero
 
 - [MCTS implementation](https://jeffbradberry.com/posts/2015/09/intro-to-monte-carlo-tree-search/)
 
-- [Pseudocode](https://github.com/jianpingliu/AlphaZero/blob/master/pseudocode.py#L265)
+- [Pseudocode](https://github.com/jianpingliu/AlphaZero/)
