@@ -26,22 +26,24 @@ class MCTS:
         history = []
         end = False
 
-        while not end and node.children != []:
-            actions = self.game.avail_actions(node.state)
-            node = self.choose(node.children)
-            node.N += 1
-            history.append(node)
+        while not end:
+            if node.children != []:
+                actions = self.game.avail_actions(node.state)
+                node = self.choose(node.children)
+                node.N += 1
+                history.append(node)
 
-            end, v = self.game.check_end(node.state)
-            self.player *= -1
+                end, v = self.game.check_end(node.state)
+                self.player *= -1
 
-        if node.children == [] and not end:
-            # Expand node.
-            actions = self.game.avail_actions(node.state)
-            v = self.expand(node, actions)
+            else:
+                # Expand node.
+                actions = self.game.avail_actions(node.state)
+                v = self.expand(node, actions)
 
-            # Backup edges.
-            self.backup(history, v)
+                # Backup edges.
+                self.backup(history, v)
+                end = True
 
         return history
 
