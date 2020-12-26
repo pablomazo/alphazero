@@ -72,22 +72,24 @@ class MCTS:
         return v
 
     def play(self, node, temperature):
-        actions = self.game.avail_actions(node.state)
-
-        N = [child.N**(1e0/temperature) for child in node.children]
+        policy = self.eval_policy(node, temperature)
 
         if temperature == 1e0:
-            a_idx = N.index(max(N))
+            a_idx = policy.index(max(policy))
 
         else:
-            Nall = sum(N)
-            policy = [float(N_a / Nall) for N_a in N]
-            a_idx = self.sample(policy, actions)
+            Nact = len(node.children)
+            a_idx = self.sample(policy, Nact)
 
         return a_idx
 
-    def sample(self, policy, actions):
-        Nact = len(actions)
+    def eval_policy(self, node, temperature):
+        N = [child.N**(1e0/temperature) for child in node.children]
+        Nall = sum(N)
+        policy = [float(N_a / Nall) for N_a in N]
+        return policy
+
+    def sample(self, policy, Nact):
 
         while True:
             a_idx = randint(0,Nact-1)
