@@ -1,8 +1,12 @@
+import torch
 import numpy as np
 
 class TicTacToe_Board:
     def play(self, state, a, player):
-        new_state = state.copy()
+        if type(state) is list:
+            new_state = state.copy()
+        elif torch.is_tensor(state):
+            new_state = state.detach().clone()
         new_state[a] = player
         return new_state
 

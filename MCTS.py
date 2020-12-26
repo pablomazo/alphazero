@@ -1,4 +1,5 @@
 import math
+import torch
 from random import random, randint
 
 from Node import Node
@@ -22,16 +23,16 @@ class MCTS:
 
     def select(self, root):
         node = root
-        history = [root]
+        history = []
         end = False
 
         while not end and node.children != []:
             actions = self.game.avail_actions(node.state)
             node = self.choose(node.children)
+            node.N += 1
             history.append(node)
 
             end, v = self.game.check_end(node.state)
-            v *= self.player
             self.player *= -1
 
         if node.children == [] and not end:
@@ -39,11 +40,13 @@ class MCTS:
             actions = self.game.avail_actions(node.state)
             v = self.expand(node, actions)
 
-        return history, v
+            # Backup edges.
+            self.backup(history, v)
+
+        return history
 
     def backup(self, history, v):
         for node in reversed(history):
-            node.N += 1
             node.W += v
             node.Q = node.W / node.N
 
@@ -57,7 +60,8 @@ class MCTS:
         return children[a_idx]
 
     def expand(self, node, actions):
-        p, v = self.NN(node.state)
+        with torch.no_grad():
+            p, v = self.NN(node.state)
 
         for a in actions:
             new_state = self.game.play(node.state, a, self.player)
@@ -108,5 +112,4 @@ class MCTS:
     def explore(self, state):
         for igame in range(self.ngames):
             self.player = state.player * -1
-            hist, v = self.select(state)
-            self.backup(hist, v)
+            _ = self.select(state)
