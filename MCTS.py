@@ -10,7 +10,7 @@ class MCTS:
 
     Input:
         - game: Game object, with set of rules, end conditions, ...
-        - state: Root node objetc.
+        - state: Root node object.
         - NN: deep neural network with policy and value nets.
         - ngames: Number of games to sample best action.
     '''
