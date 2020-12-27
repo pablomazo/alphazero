@@ -41,15 +41,16 @@ class MCTS:
                 actions = self.game.avail_actions(node.state)
                 v = self.expand(node, actions)
 
-                # Backup edges.
-                self.backup(history, v)
                 end = True
+
+        # Backup edges.
+        self.backup(history, v)
 
         return history
 
     def backup(self, history, v):
         for node in reversed(history):
-            node.W += v
+            node.W += v if self.root.player == (-node.player) else -v
             node.Q = node.W / node.N
 
     def choose(self, children):
@@ -99,12 +100,9 @@ class MCTS:
                 return a_idx
 
     def Uval(self, children):
-        cpuct = 1e-4
-        Nall = 0
+        cpuct = 1e0
         U = []
-        for child in children:
-            Nall += child.N
-
+        Nall = sum(child.N for child in children)
         Nall = math.sqrt(Nall)
 
         for child in children:
