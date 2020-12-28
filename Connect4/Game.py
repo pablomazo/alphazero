@@ -19,11 +19,6 @@ class Connect4:
                 return new_state
 
     def check_end(self, state):
-        # Check if there are available actions:
-        if len(self.avail_actions(state)) == 0:
-            end = True
-            winner = 0
-            return end, winner
         # Last played pieces must be located on top of each 
         # column:
         last_played = []
@@ -46,7 +41,7 @@ class Connect4:
                 suma += 1
                 j -= 1
 
-            if suma == self.NINLINE:
+            if suma >= self.NINLINE:
                 end = True
                 winner = state[ip,jp]
                 return end, winner
@@ -64,7 +59,7 @@ class Connect4:
                 suma += 1
                 i -= 1
 
-            if suma == self.NINLINE:
+            if suma >= self.NINLINE:
                 end = True
                 winner = state[ip,jp]
                 return end, winner
@@ -86,7 +81,7 @@ class Connect4:
                   i += 1
                   j -= 1
 
-            if suma == self.NINLINE:
+            if suma >= self.NINLINE:
                 end = True
                 winner = state[ip,jp]
                 return end, winner
@@ -108,10 +103,16 @@ class Connect4:
                   i -= 1
                   j -= 1
 
-            if suma == self.NINLINE:
+            if suma >= self.NINLINE:
                 end = True
                 winner = state[ip,jp]
                 return end, winner
+
+        # Check if there are available actions:
+        if len(self.avail_actions(state)) == 0:
+            end = True
+            winner = 0
+            return end, winner
 
         return False, 0
 
