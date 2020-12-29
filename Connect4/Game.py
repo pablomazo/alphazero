@@ -6,12 +6,10 @@ class Connect4:
         self.NCOL = 7
         self.NROW = 6
         self.NINLINE = 4
+        self.init_state = torch.zeros(6,7, dtype=torch.float)
 
     def play(self, state, a , player):
-        if type(state) is list:
-            new_state = state.copy()
-        elif torch.is_tensor(state):
-            new_state = state.detach().clone()
+        new_state = state.detach().clone()
 
         for irow in range(self.NROW):
             if state[irow,a] == 0:
