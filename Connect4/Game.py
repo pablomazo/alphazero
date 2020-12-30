@@ -138,3 +138,7 @@ class Connect4:
                 out += token + ' | '
             print(out)
         print('-----------------------------')
+        out = '| '
+        for j in range(0, self.NCOL):
+            out += str(j) + ' | '
+        print(out)
