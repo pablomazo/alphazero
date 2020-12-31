@@ -1,6 +1,7 @@
 import math
 import torch
 from random import random, randint
+import numpy as np
 
 from Node import Node
 
@@ -10,18 +11,16 @@ class MCTS:
 
     Input:
         - game: Game object, with set of rules, end conditions, ...
-        - state: Root node object.
         - NN: deep neural network with policy and value nets.
         - ngames: Number of games to sample best action.
     '''
-    def __init__(self, game, state, NN, ngames=10):
-        self.root = state
+    def __init__(self, game, NN, ngames=10):
+        self.root = None
         self.game = game
         self.NN = NN
         self.ngames = ngames
-        self.player = self.root.player
 
-    def select(self, root):
+    def simulation(self, root):
         node = root
         history = []
         end = False
@@ -72,15 +71,10 @@ class MCTS:
 
         return v
 
-    def play(self, node, temperature):
+    def select_action(self, node, temperature):
         policy = self.eval_policy(node, temperature)
 
-        if temperature == 1e0:
-            a_idx = policy.index(max(policy))
-
-        else:
-            Nact = len(node.children)
-            a_idx = self.sample(policy, Nact)
+        a_idx = self.sample(policy)
 
         return a_idx
 
@@ -90,14 +84,11 @@ class MCTS:
         policy = [float(N_a / Nall) for N_a in N]
         return policy
 
-    def sample(self, policy, Nact):
+    def sample(self, policy):
+        Nact = len(policy)
 
-        while True:
-            a_idx = randint(0,Nact-1)
-            v = random()
-
-            if v < policy[a_idx]:
-                return a_idx
+        a_idx = np.random.choice(Nact, p=policy)
+        return a_idx
 
     def Uval(self, children):
         cpuct = 1e0
@@ -111,7 +102,44 @@ class MCTS:
 
         return U
 
-    def explore(self, state):
+    def add_dirichlet(self, actions):
+        root_dirichlet_alpha = 0.25
+        root_exploration_fraction = 0.25
+        # Add Dirichlet noise.
+        noise = np.random.dirichlet([root_dirichlet_alpha] * len(actions))
+        frac = root_exploration_fraction
+        for a, n in enumerate(noise):
+            self.root.children[a].P = self.root.children[a].P * (1 - frac) + n * frac
+
+
+    def explore(self, root):
+        self.root = root
+        self.player = self.root.player
+
+        # Expand root node if no children.
+        actions = self.game.avail_actions(self.root.state)
+        if self.root.children == []:
+            self.player = self.root.player * -1
+            _ = self.expand(self.root, actions)
+            self.player = self.root.player * -1
+
+        # Add noise to children in root node.
+        self.add_dirichlet(actions)
+
         for igame in range(self.ngames):
-            self.player = state.player * -1
-            _ = self.select(state)
+            self.player = root.player * -1
+            _ = self.simulation(root)
+
+    def play(self, node, T):
+        end = False
+        player = -node.player
+        history = []
+
+        while not end:
+            history.append(node)
+            self.explore(node)
+            a = self.select_action(node, T)
+            node = node.children[a]
+            end, winner = self.game.check_end(node.state)
+
+        return history, winner
