@@ -26,10 +26,9 @@ class MCTS:
         end = False
 
         while not end:
+            actions = self.game.avail_actions(node.state)
             if node.children != []:
-                actions = self.game.avail_actions(node.state)
                 node = self.choose(node.children)
-                node.N += 1
                 history.append(node)
 
                 end, v = self.game.check_end(node.state)
@@ -37,7 +36,6 @@ class MCTS:
 
             else:
                 # Expand node.
-                actions = self.game.avail_actions(node.state)
                 v = self.expand(node, actions)
 
                 end = True
@@ -49,7 +47,8 @@ class MCTS:
 
     def backup(self, history, v):
         for node in reversed(history):
-            node.W += v if self.root.player == (-node.player) else -v
+            node.N += 1
+            node.W += v * node.player
             node.Q = node.W / node.N
 
     def choose(self, children):
@@ -121,14 +120,13 @@ class MCTS:
         if self.root.children == []:
             self.player = self.root.player * -1
             _ = self.expand(self.root, actions)
-            self.player = self.root.player * -1
 
         # Add noise to children in root node.
         self.add_dirichlet(actions)
 
         for igame in range(self.ngames):
-            self.player = root.player * -1
-            _ = self.simulation(root)
+            self.player = self.root.player * -1
+            _ = self.simulation(self.root)
 
     def play(self, node, T):
         end = False
