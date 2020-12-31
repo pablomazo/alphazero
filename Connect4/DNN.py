@@ -23,3 +23,6 @@ class DNN(nn.Module):
         if x1.size(0)==1:
             return x1[0,:], x2[0,:]
         return x1, x2
+
+    def save_checkpoint(self, name='checkpoint.pth'):
+        torch.save(self.state_dict(), name)
