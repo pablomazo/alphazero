@@ -45,6 +45,7 @@ def tournament(agent1, agent2, NGAMES=100):
 
                 if node2.children == []:
                     mcts2.explore(node2)
+
             elif node1.player == -1:
                 mcts2.explore(node2)
                 a = mcts2.select_action(node2, 0.01)
