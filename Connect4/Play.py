@@ -20,10 +20,10 @@ game = Connect4()
 
 p1 = 10
 while p1 != 0 and p1 != 1:
-    p1 = int(input('0: Máquina juega primero; 1: Humano juega primero'))
+    p1 = int(input('0: Máquina juega primero; 1: Humano juega primero '))
 player1 = dnn1
 
-mcts1 = MCTS(game, player1, ngames=50)
+mcts1 = MCTS(game, player1, ngames=550)
 end = False
 player = -1
 node = Node(game.init_state, 1, player)
@@ -35,29 +35,39 @@ while not end:
         if player == -1:
             mcts1.explore(node)
             a = mcts1.select_action(node, 0.01)
+            for child in node.children:
+                print('Visits: ', child.N)
         elif player == 1:
-            a = int(input())
+            avail = game.avail_actions(node.state)
+            a = None
+            while a not in avail:
+                a = int(input('Your move: '))
+            a = avail.index(a)
             if node.children == []:
+                print('Explore')
                 mcts1.explore(node)
 
     if p1 == 1:
         if player == 1:
             mcts1.explore(node)
             a = mcts1.select_action(node, 0.01)
+            for child in node.children:
+                print('Visits: ', child.N)
         elif player == -1:
-            a = int(input())
+            avail = game.avail_actions(node.state)
+            a = None
+            while a not in avail:
+                a = int(input('Your move: '))
+            a = avail.index(a)
             if node.children == []:
+                print('Explore')
                 mcts1.explore(node)
 
 
-    print(len(node.children), a)
     node = node.children[a]
     player = node.player
     game.plot(node.state)
 
     end, w = game.check_end(node.state)
-
-    # Remove childrens:
-    node.children = []
 
 print(w)
