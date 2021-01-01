@@ -23,6 +23,7 @@ def tournament(agent1, agent2, NGAMES=100):
     game = Connect4()
 
     for igame in range(NGAMES):
+        if igame % 10 == 0: print('GAME: {} in tournament'.format(igame))
         p1 = np.random.choice(2)
         if p1 == 0:
             player1 = dnn1

@@ -13,6 +13,8 @@ from DNN import DNN
 from Trainer import Trainer
 import Tournament
 
+torch.set_num_threads(1)
+
 # Train loop:
 def self_play_game():
     # Play games to fill replay memory
@@ -47,6 +49,8 @@ NGAMES = 150
 GAMES_PER_EPISODE = 10
 EPISODES = 100
 
+TOURNAMENT_FREQ = 10
+
 
 Transition = namedtuple('Transition',('state', 'policy', 'reward'))
 dnn = DNN()
@@ -67,16 +71,18 @@ for episode in range(1,EPISODES+1):
 
     # Train
     loss = trainer.train(dnn, optimizer, replay_memory)
-    dnn.save_checkpoint(name='checkpoint.pth')
 
-    # Make tournament between the two models:
-    nwin1, nwin2, draw = Tournament.tournament('checkpoint.pth', 'best.pth', NGAMES=100)
+    if episode % TOURNAMENT_FREQ == 0:
+        dnn.save_checkpoint(name='checkpoint.pth')
 
-    if nwin1 > nwin2:
-        # Current player is better:
-        dnn.save_checkpoint(name='best.pth')
-    else:
-        # Reload previous model:
-        dnn.load_state_dict(torch.load('best.pth'))
+        # Make tournament between the two models:
+        nwin1, nwin2, draw = Tournament.tournament('checkpoint.pth', 'best.pth', NGAMES=100)
+
+        if nwin1 > nwin2:
+            # Current player is better:
+            dnn.save_checkpoint(name='best.pth')
+        else:
+            # Reload previous model:
+            dnn.load_state_dict(torch.load('best.pth'))
 
     print('Episode, Loss, replay_memory len:', episode, loss, len(replay_memory))
