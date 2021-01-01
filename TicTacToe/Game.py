@@ -4,7 +4,6 @@ import numpy as np
 class Game:
     def __init__(self):
         self.init_state = torch.zeros(9, dtype=torch.float)
-        self.base_policy = torch.tensor([0]*9,dtype=torch.float)
 
     def play(self, state, a, player):
         new_state = state.detach().clone()
