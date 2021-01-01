@@ -21,12 +21,19 @@ class DNN(nn.Module):
         x = F.relu(self.l1(x))
         x = F.relu(self.l2(x))
         x1 = self.l3(x) # Logit value of policy
-        x1 = self.sm(x1)
         x2 = torch.tanh(self.l4(x)) # Value head.
 
-        if x1.size(0)==1:
-            return x1[0,:], x2[0,:]
         return x1, x2
+
+    def eval(self,x):
+        with torch.no_grad():
+            p, v = self.forward(x)
+
+        p = self.sm(p)
+        if p.size(0)==1:
+            return p[0,:], v[0,:]
+
+        return p, v
 
     def save_checkpoint(self, name='checkpoint.pth'):
         torch.save(self.state_dict(), name)
