@@ -61,8 +61,7 @@ class MCTS:
         return children[a_idx]
 
     def expand(self, node, actions):
-        with torch.no_grad():
-            p, v = self.NN(node.state)
+        p, v = self.NN.eval(node.state)
 
         for a in actions:
             new_state = self.game.play(node.state, a, self.player)
