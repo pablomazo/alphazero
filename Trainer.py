@@ -11,10 +11,13 @@ class Trainer:
         self.mini_batch = mini_batch
         self.batch = batch
 
+        self.mse = torch.nn.MSELoss()
+        self.ce = torch.nn.CrossEntropyLoss()
+
     def loss_fn(self,z, v, policy, net_pol):
-        a = torch.pow(z-v,2)
-        b = torch.sum((policy * torch.log(net_pol)),1)
-        return torch.mean(a - b)
+        a = self.mse(z,v)
+        b = self.ce(net_pol, policy.view(-1))
+        return a + b
 
     def train(self, model, optimizer, memory):
         if len(memory) < memory.REPLAY_START_SIZE:
