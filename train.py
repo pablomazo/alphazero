@@ -45,8 +45,8 @@ def self_play_game(best_model):
 
     # Save play in replaymemory
     for node in history:
-        policy = torch.tensor([0,0,0,0,0,0,0],dtype=torch.float)
-        p = mcts.eval_policy(node, 1)
+        policy = game.base_policy
+        p = mcts.eval_policy(node, 0.01)
         for i, a in enumerate(game.avail_actions(node.state)):
             policy[a] = p[i]
 

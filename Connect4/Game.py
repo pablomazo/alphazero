@@ -7,6 +7,7 @@ class Game:
         self.NROW = 6
         self.NINLINE = 4
         self.init_state = torch.zeros(6,7, dtype=torch.float)
+        self.base_policy = torch.tensor([0]*7,dtype=torch.float)
 
     def play(self, state, a , player):
         new_state = state.detach().clone()
