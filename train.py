@@ -92,8 +92,5 @@ if __name__ == "__main__":
                 # Current player is better:
                 dnn_best.load_state_dict(dnn.state_dict())
                 dnn.save_checkpoint(name='best.pth')
-            else:
-                # Reload previous model:
-                dnn.load_state_dict(torch.load('best.pth'))
 
         print('Episode, Loss, replay_memory len:', episode, loss, len(replay_memory))
