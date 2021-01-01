@@ -1,5 +1,6 @@
 import torch
 
+import numpy as np
 from collections import namedtuple
 from random import random
 import sys
@@ -45,12 +46,12 @@ def self_play_game(best_model):
 
     # Save play in replaymemory
     for node in history:
-        policy = game.base_policy
-        p = mcts.eval_policy(node, 0.01)
-        for i, a in enumerate(game.avail_actions(node.state)):
-            policy[a] = p[i]
+        p = np.argmax(mcts.eval_policy(node, 0.01))
+        avail = game.avail_actions(node.state)
+        a = torch.tensor([avail[p]], dtype=torch.long)
+        w = torch.tensor([-winner*node.player], dtype=torch.float)
 
-        replay_memory.add(node.state, policy, torch.tensor([-winner*node.player], dtype=torch.float))
+        replay_memory.add(node.state, a, w)
 
     return winner
 
