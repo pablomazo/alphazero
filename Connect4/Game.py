@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 
-class Connect4:
+class Game:
     def __init__(self):
         self.NCOL = 7
         self.NROW = 6

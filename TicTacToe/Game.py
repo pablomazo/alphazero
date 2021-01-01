@@ -1,12 +1,12 @@
 import torch
 import numpy as np
 
-class TicTacToe_Board:
+class Game:
+    def __init__(self):
+        self.init_state = torch.zeros(9, dtype=torch.float)
+
     def play(self, state, a, player):
-        if type(state) is list:
-            new_state = state.copy()
-        elif torch.is_tensor(state):
-            new_state = state.detach().clone()
+        new_state = state.detach().clone()
         new_state[a] = player
         return new_state
 
@@ -55,7 +55,7 @@ class TicTacToe_Board:
                 if state[3*i+j] == -1:
                     token = 'o'
                 if state[3*i+j] == 0:
-                    token = ' '
+                    token = str(3*i+j)
                 out += token + ' | '
             print(out)
         print('-------------')
