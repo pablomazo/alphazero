@@ -32,8 +32,8 @@ def tournament(agent1, agent2, NGAMES=100):
             player1 = dnn2
             player2 = dnn1
 
-        mcts1 = MCTS(game, player1, ngames=150)
-        mcts2 = MCTS(game, player2, ngames=150)
+        mcts1 = MCTS(game, player1, ngames=50)
+        mcts2 = MCTS(game, player2, ngames=50)
         end = False
         player = -1
         node1 = Node(game.init_state, 1, player)
