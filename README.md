@@ -39,37 +39,37 @@ nodes, leading to better exploration processes during the MCTS.
 ## Contents:
 This repository contains the following files:
 
-	- MCTS.py: MCTS class. Holds all the operations that are run in the MCTS process.
+- MCTS.py: MCTS class. Holds all the operations that are run in the MCTS process.
 
-	- Node.py: Node class. 
+- Node.py: Node class. 
 
-	- ReplayMemory.py: On this object the games are saved to be used as dataset in the training process.
+- ReplayMemory.py: On this object the games are saved to be used as dataset in the training process.
 
-	- Trainer.py: Class holding the methods to train the DNN.
+- Trainer.py: Class holding the methods to train the DNN.
 
-	- Tournament.py: Function to make plays between two agents. The winning statistics are generated for
-	each agent.
+- Tournament.py: Function to make plays between two agents. The winning statistics are generated for
+each agent.
 
-	- Play.py: Run it inside a game folder to play against the best agent.
+- Play.py: Run it inside a game folder to play against the best agent.
 
-	- train.py: Executes the training process. It should be run from a game folder.
+- train.py: Executes the training process. It should be run from a game folder.
 
 Game dependent content:
 
-	- Game.py. Game class. The following methods must be implemented:
+- Game.py. Game class. The following methods must be implemented:
 
-	1. `play(state, action, player)`: Given the `state` of the game and `action` is played by `player`. The
-	new state is returned.
+1. `play(state, action, player)`: Given the `state` of the game and `action` is played by `player`. The
+new state is returned.
 
-	2. `check_end(state)`: Given `state` returns `end, winner`, with `end` being a bool indicating if `state`
-	corresponds to end game and `winner` is the index of player who won (0 if draw).
+2. `check_end(state)`: Given `state` returns `end, winner`, with `end` being a bool indicating if `state`
+corresponds to end game and `winner` is the index of player who won (0 if draw).
 
-	3. `avail_actions(state)`: Given `state` returns an array of possible actions to be played.
+3. `avail_actions(state)`: Given `state` returns an array of possible actions to be played.
 
-	4. `plot(state)`: Plots the current state in a human easy interpretable way.
+4. `plot(state)`: Plots the current state in a human easy interpretable way.
 
-	- DNN.py: The deep neural network function. Since I do not have the computer resources of Google I did not
-	implement the net described in the article but a much simpler one...
+- DNN.py: The deep neural network function. Since I do not have the computer resources of Google I did not
+implement the net described in the article but a much simpler one...
 
  
 ## Training process:
@@ -96,7 +96,8 @@ To run the training process, go inside a game folder. From there execute
 python ../train.py
 `
 with the following options:
-`
+
+```
 usage: train.py [-h] [--episodes EPISODES] [--ngames NGAMES]
                 [--games_per_episode GAMES_PER_EPISODE]
                 [--tournament_freq TOURNAMENT_FREQ] [--batch_size BATCH_SIZE]
@@ -122,7 +123,7 @@ optional arguments:
   --capacity CAPACITY   Maximum number of datapoints in replaymemory.
   --replay_start_size REPLAY_START_SIZE
                         Minimum number of datapoint to start training.
-`
+```
 ## References:
 - [Original paper](https://www.nature.com/articles/nature24270.epdf?author_access_token=VJXbVjaSHxFoctQQ4p2k4tRgN0jAjWel9jnR3ZoTv0PVW4gB86EEpGqTRDtpIz-2rmo8-KG06gqVobU5NSCFeHILHcVFUeMsbvwS-lxjqQGg98faovwjxeTUgZAUMnRQ)
 
