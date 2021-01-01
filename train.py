@@ -55,6 +55,9 @@ def self_play_game(best_model):
     return winner
 
 if __name__ == "__main__":
+    print('Train settings:')
+    print(args)
+
     Transition = namedtuple('Transition',('state', 'policy', 'reward'))
     dnn_best = DNN()
     dnn = DNN()
@@ -65,8 +68,6 @@ if __name__ == "__main__":
     optimizer = torch.optim.SGD(dnn.parameters(), lr=args.lr, momentum=args.mom, weight_decay=1e-4)
 
     trainer = Trainer(args.nepochs, args.nbatch, args.batch_size)
-
-    loss_hist = []
 
     dnn_best.save_checkpoint(name='best.pth')
     for episode in range(1,args.episodes+1):
