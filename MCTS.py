@@ -128,16 +128,20 @@ class MCTS:
             self.player = self.root.player * -1
             _ = self.simulation(self.root)
 
-    def play(self, node, T):
+    def play(self, node, iniT):
         end = False
         player = -node.player
         history = []
 
         while not end:
+            T = np.amax([iniT, 0.01])
             history.append(node)
             self.explore(node)
             a = self.select_action(node, T)
             node = node.children[a]
             end, winner = self.game.check_end(node.state)
+
+            # Temperature is reduced to make deterministic moves as game advances.
+            iniT -= 0.2
 
         return history, winner
