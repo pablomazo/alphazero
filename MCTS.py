@@ -133,7 +133,7 @@ class MCTS:
         history = []
 
         while not end:
-            T = np.amax([iniT, 0.01])
+            T = np.amax([iniT, 0.1])
             history.append(node)
             self.explore(node)
             a = self.select_action(node, T)

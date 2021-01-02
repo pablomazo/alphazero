@@ -42,14 +42,14 @@ def tournament(agent1, agent2, NGAMES=100, mcts_games=50):
         while not end:
             if node1.player == 1:
                 mcts1.explore(node1)
-                a = mcts1.select_action(node1, 0.01)
+                a = mcts1.select_action(node1, 0.1)
 
                 if node2.children == []:
                     mcts2.explore(node2)
 
             elif node1.player == -1:
                 mcts2.explore(node2)
-                a = mcts2.select_action(node2, 0.01)
+                a = mcts2.select_action(node2, 0.1)
 
                 if node1.children == []:
                     mcts1.explore(node1)
