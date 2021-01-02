@@ -12,11 +12,14 @@ class Trainer:
         self.batch = batch
 
         self.mse = torch.nn.MSELoss()
-        self.ce = torch.nn.CrossEntropyLoss()
+
+    def softXEnt(self, input, target):
+        logprobs = torch.nn.functional.log_softmax (input, dim = 1)
+        return  -(target * logprobs).sum() / input.shape[0]
 
     def loss_fn(self,z, v, policy, net_pol):
         a = self.mse(z,v)
-        b = self.ce(net_pol, policy.view(-1))
+        b = self.softXEnt(net_pol, policy)
         return a + b
 
     def train(self, model, optimizer, memory):
@@ -29,16 +32,21 @@ class Trainer:
 
             # Take self.mini_batch mini batches:
             for ibatch in range(self.mini_batch):
-                l = self.optimize(model, optimizer, memory)
+                l = self.eval_batch(model, memory)
                 loss += l
 
-            loss /= self.batch
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+            loss /= self.mini_batch
+            loss = loss.data.item()
 
             if epoch % 100 == 0:
                 print(epoch, loss)
         return loss
 
-    def optimize(self, model, optimizer, memory):
+    def eval_batch(self, model, memory):
         transitions = memory.sample(self.batch)
         batch = Transition(*zip(*transitions))
 
@@ -49,8 +57,6 @@ class Trainer:
         net_pol, v = model(states)
 
         loss = self.loss_fn(z,v,policy,net_pol)
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+        return loss
 
         return loss.data.item()
