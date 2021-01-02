@@ -101,7 +101,7 @@ class MCTS:
         return U
 
     def add_dirichlet(self, actions):
-        root_dirichlet_alpha = 0.3
+        root_dirichlet_alpha = 0.03
         root_exploration_fraction = 0.25
         # Add Dirichlet noise.
         noise = np.random.dirichlet([root_dirichlet_alpha] * len(actions))
