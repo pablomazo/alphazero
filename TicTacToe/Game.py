@@ -17,10 +17,13 @@ class Game:
                       [0,4,8], [2,4,6]]          # diagonal
 
         # Check winning lines:
-        for h in win_arrays:
-            v = sum(state[i] for i in h)
+        if torch.sum(torch.abs(state)) < 5:
+            return False, 0
 
-            if abs(v) == 3:
+        for h in win_arrays:
+            v = torch.sum(state[h])
+
+            if torch.abs(v) == 3:
                 end = True
                 winner = 1 if v > 0 else -1
                 return end, winner

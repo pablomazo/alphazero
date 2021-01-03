@@ -32,7 +32,6 @@ class MCTS:
                 history.append(node)
 
                 end, v = self.game.check_end(node.state)
-                self.player *= -1
 
             else:
                 # Expand node.
@@ -52,20 +51,21 @@ class MCTS:
             node.Q = node.W / node.N
 
     def choose(self, children):
-        Q = [child.Q for child in children]
+        Q = np.array([child.Q for child in children])
         U = self.Uval(children)
 
-        total = [sum(x) for x in zip(Q,U)]
+        total = Q + U
 
-        a_idx = total.index(max(total))
+        a_idx = np.argmax(total)
         return children[a_idx]
 
     def expand(self, node, actions):
         p, v = self.NN.eval(node.state)
+        player = node.player * -1
 
         for a in actions:
-            new_state = self.game.play(node.state, a, self.player)
-            node.children.append(Node(new_state, p[a], self.player))
+            new_state = self.game.play(node.state, a, player)
+            node.children.append(Node(new_state, p[a], player))
 
         return v
 
@@ -90,13 +90,18 @@ class MCTS:
 
     def Uval(self, children):
         cpuct = 1e0
-        U = []
-        Nall = sum(child.N for child in children)
-        Nall = math.sqrt(Nall)
-
+        P = []
+        N = []
         for child in children:
-            aux = cpuct * child.P * Nall / (1e0 + child.N)
-            U.append(aux)
+            P.append(child.P)
+            N.append(child.N)
+
+        P = np.array(P)
+        N = np.array(N)
+        Nall = np.sum(N)
+        Nall = np.sqrt(Nall)
+
+        U = cpuct * P * Nall / (1e0 + N)
 
         return U
 
@@ -112,24 +117,20 @@ class MCTS:
 
     def explore(self, root):
         self.root = root
-        self.player = self.root.player
 
         # Expand root node if no children.
         actions = self.game.avail_actions(self.root.state)
         if self.root.children == []:
-            self.player = self.root.player * -1
             _ = self.expand(self.root, actions)
 
         # Add noise to children in root node.
         self.add_dirichlet(actions)
 
         for igame in range(self.ngames):
-            self.player = self.root.player * -1
             _ = self.simulation(self.root)
 
     def play(self, node, iniT):
         end = False
-        player = -node.player
         history = []
 
         while not end:
