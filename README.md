@@ -58,13 +58,13 @@ Game dependent content:
 
 - Game.py. Game class. The following methods must be implemented:
 
-1. `play(state, action, player)`: Given the `state` of the game and `action` is played by `player`. The
+1. `play(node, action)`: Given the `state` (in node) of the game and `action` is played by `player`. The
 new state is returned.
 
-2. `check_end(state)`: Given `state` returns `end, winner`, with `end` being a bool indicating if `state`
+2. `check_end(node)`: Given `state` (in node) returns `end, winner`, with `end` being a bool indicating if `state`
 corresponds to end game and `winner` is the index of player who won (0 if draw).
 
-3. `avail_actions(state)`: Given `state` returns an array of possible actions to be played.
+3. `avail_actions(node)`: Given `state`  (in node) returns an array of possible actions to be played.
 
 4. `plot(state)`: Plots the current state in a human easy interpretable way.
 
