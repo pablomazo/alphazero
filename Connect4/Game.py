@@ -20,6 +20,10 @@ class Game:
     def check_end(self, state):
         # Last played pieces must be located on top of each 
         # column:
+
+        # If there are less than 7 pieces there is no possible winner.
+        if torch.sum(torch.abs(state)) < 7:
+            return False, 0
         last_played = []
         for jp in range(self.NCOL):
             for ip in range(self.NROW-1,-1,-1):
