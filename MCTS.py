@@ -26,13 +26,18 @@ class MCTS:
         end = False
 
         while not end:
-            actions = self.game.avail_actions(node.state)
+            if node.avail_actions == None:
+                actions = self.game.avail_actions(node)
+                node.avail_actions = actions
+            else:
+                actions = node.avail_actions
+
             if node.children != []:
                 node = self.choose(node.children)
                 history.append(node)
 
                 if node.end == None:
-                    end, v = self.game.check_end(node.state)
+                    end, v = self.game.check_end(node)
                     node.end = end
                     node.v = v
                 else:
@@ -70,8 +75,9 @@ class MCTS:
         player = node.player * -1
 
         for a in actions:
-            new_state = self.game.play(node.state, a, player)
+            new_state = self.game.play(node, a)
             node.children.append(Node(new_state, p[a], player))
+            node.children[-1].last_action = a
 
         return v
 
@@ -125,7 +131,12 @@ class MCTS:
         self.root = root
 
         # Expand root node if no children.
-        actions = self.game.avail_actions(self.root.state)
+        if root.avail_actions == None:
+            actions = self.game.avail_actions(root)
+            root.avail_actions = actions
+        else:
+            actions = root.avail_actions
+
         if self.root.children == []:
             _ = self.expand(self.root, actions)
 
@@ -145,7 +156,7 @@ class MCTS:
             self.explore(node)
             a = self.select_action(node, T)
             node = node.children[a]
-            end, winner = self.game.check_end(node.state)
+            end, winner = self.game.check_end(node)
 
             # Temperature is reduced to make deterministic moves as game advances.
             iniT -= 0.2

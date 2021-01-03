@@ -36,7 +36,7 @@ while not end:
             mcts1.explore(node)
             a = mcts1.select_action(node, 0.1)
         elif player == 1:
-            avail = game.avail_actions(node.state)
+            avail = game.avail_actions(node)
             a = None
             while a not in avail:
                 a = int(input('Your move: '))
@@ -50,7 +50,7 @@ while not end:
             mcts1.explore(node)
             a = mcts1.select_action(node, 0.1)
         elif player == -1:
-            avail = game.avail_actions(node.state)
+            avail = game.avail_actions(node)
             a = None
             while a not in avail:
                 a = int(input('Your move: '))
@@ -74,6 +74,6 @@ while not end:
     player = node.player
     game.plot(node.state)
 
-    end, w = game.check_end(node.state)
+    end, w = game.check_end(node)
 
 print(w)

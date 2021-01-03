@@ -57,7 +57,7 @@ def tournament(agent1, agent2, NGAMES=100, mcts_games=50):
             # To use previous searches on nodes.
             node1 = node1.children[a]
             node2 = node2.children[a]
-            end, w = game.check_end(node1.state)
+            end, w = game.check_end(node1)
 
         if w == 1:
             if p1 == 0:

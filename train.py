@@ -47,11 +47,11 @@ def self_play_game(best_model):
     # Save play in replaymemory
     for node in history:
         p = mcts.eval_policy(node, 0.1)
-        avail = game.avail_actions(node.state)
+        avail = game.avail_actions(node)
         a = torch.tensor([0]*game.nactions, dtype=torch.long)
         for i, act in enumerate(avail):
             a[act] = p[i]
-        w = torch.tensor([-winner*node.player], dtype=torch.float)
+        w = torch.tensor([winner*node.player], dtype=torch.float)
 
         replay_memory.add(node.state, a, w)
 
