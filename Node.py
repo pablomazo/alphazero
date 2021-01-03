@@ -18,3 +18,5 @@ class Node:
         self.W = 0e0
         self.N = 0
         self.children = []
+        self.end = None
+        self.v = None

@@ -31,7 +31,13 @@ class MCTS:
                 node = self.choose(node.children)
                 history.append(node)
 
-                end, v = self.game.check_end(node.state)
+                if node.end == None:
+                    end, v = self.game.check_end(node.state)
+                    node.end = end
+                    node.v = v
+                else:
+                    end = node.end
+                    v = node.v
 
             else:
                 # Expand node.
