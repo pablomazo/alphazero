@@ -23,7 +23,7 @@ while p1 != 0 and p1 != 1:
     p1 = int(input('0: Máquina juega primero; 1: Humano juega primero '))
 player1 = dnn1
 
-mcts1 = MCTS(game, player1, ngames=200)
+mcts1 = MCTS(game, player1, ngames=50)
 end = False
 player = -1
 node = Node(game.init_state, 1, player)
@@ -65,14 +65,12 @@ while not end:
     print('Value', [child.Q for child in node.children])
     print('Prior', [child.P for child in node.children])
     print('Total', [child.Q + child.P for child in node.children])
-    print('Player', node.player)
     node = node.children[a]
     print('New node')
     print('Count', [child.N for child in node.children])
     print('Value', [child.Q for child in node.children])
     print('Prior', [child.P for child in node.children])
     print('Total', [child.Q + child.P for child in node.children])
-    print('Player', node.player)
     player = node.player
     game.plot(node)
 

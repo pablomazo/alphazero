@@ -132,8 +132,6 @@ class Game:
 
     def plot(self, node):
         state = node.state * node.player
-        print(node.state)
-        print(node.state*node.player)
         # p1: x  p2: o
         for i in range(self.NROW-1,-1,-1):
             print('-----------------------------')
