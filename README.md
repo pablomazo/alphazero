@@ -66,7 +66,9 @@ corresponds to end game and `winner` is the index of player who won (0 if draw).
 
 3. `avail_actions(node)`: Given `state`  (in node) returns an array of possible actions to be played.
 
-4. `plot(state)`: Plots the current state in a human easy interpretable way.
+4. `plot(node)`: Plots the current state in a human easy interpretable way.
+
+The states are always from the side of the current player.
 
 - DNN.py: The deep neural network function. Since I do not have the computer resources of Google I did not
 implement the net described in the article but a much simpler one...
