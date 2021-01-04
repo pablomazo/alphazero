@@ -76,7 +76,7 @@ class MCTS:
 
         for a in actions:
             new_state = self.game.play(node, a)
-            node.children.append(Node(new_state, p[a], player))
+            node.children.append(Node(new_state * player, p[a], player))
             node.children[-1].last_action = a
 
         return v

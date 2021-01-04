@@ -11,6 +11,7 @@ class Game:
 
     def play(self, node, a):
         new_state = node.state.detach().clone()
+        new_state *= node.player
 
         for irow in range(self.NROW):
             if node.state[irow,a] == 0:
@@ -21,7 +22,7 @@ class Game:
         # Last played pieces must be located on top of each 
         # column:
 
-        state = node.state
+        state = node.state * node.player
         # If there are less than 7 pieces there is no possible winner.
         if torch.sum(torch.abs(state)) < 7:
             return False, 0
@@ -129,7 +130,10 @@ class Game:
 
         return actions
 
-    def plot(self, state):
+    def plot(self, node):
+        state = node.state * node.player
+        print(node.state)
+        print(node.state*node.player)
         # p1: x  p2: o
         for i in range(self.NROW-1,-1,-1):
             print('-----------------------------')

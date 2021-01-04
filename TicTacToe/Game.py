@@ -8,6 +8,7 @@ class Game:
 
     def play(self, node, a):
         new_state = node.state.detach().clone()
+        new_state *= node.player
         new_state[a] = node.player * -1
         return new_state
 
@@ -16,7 +17,7 @@ class Game:
                       [0,3,6], [1,4,7], [2,5,8], # vertical
                       [0,4,8], [2,4,6]]          # diagonal
 
-        state = node.state
+        state = node.state * node.player
         # If there are less than 5 pieces there is no possible winner.
         if torch.sum(torch.abs(state)) < 5:
             return False, 0
@@ -43,7 +44,7 @@ class Game:
         # Returns the available actions for a given board state..
         actions = []
 
-        state = node.state
+        state = node.state * node.player
         # Each action is given as a vector with a one in the free position.
         for a, pos in enumerate(state):
             if pos == 0:
@@ -51,7 +52,8 @@ class Game:
 
         return actions
 
-    def plot(self, state):
+    def plot(self, node):
+        state = node.state * node.player
         # p1: x  p2: o
         for i in range(0, 3):
             print('-------------')
