@@ -42,11 +42,10 @@ def self_play_game(best_model):
     root = Node(game.init_state, 1, player)
     mcts = MCTS(game, best_model, ngames=args.ngames)
 
-    history, winner = mcts.play(root, T)
+    g, winner = mcts.play(root, T)
 
     # Save play in replaymemory
-    for node in history:
-        p = mcts.eval_policy(node, 0.1)
+    for node, p in g:
         avail = game.avail_actions(node)
         a = torch.tensor([0]*game.nactions, dtype=torch.long)
         for i, act in enumerate(avail):

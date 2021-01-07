@@ -79,26 +79,21 @@ class MCTS:
             node.children.append(Node(new_state * player, p[a], player))
             node.children[-1].last_action = a
 
-        return v
+        return v * node.player
 
     def select_action(self, node, temperature):
         policy = self.eval_policy(node, temperature)
+        Nact = len(policy)
 
-        a_idx = self.sample(policy)
+        a_idx = np.random.choice(Nact, p=policy)
 
-        return a_idx
+        return a_idx, policy
 
     def eval_policy(self, node, temperature):
         N = [child.N**(1e0/temperature) for child in node.children]
         Nall = sum(N)
         policy = [float(N_a / Nall) for N_a in N]
         return policy
-
-    def sample(self, policy):
-        Nact = len(policy)
-
-        a_idx = np.random.choice(Nact, p=policy)
-        return a_idx
 
     def Uval(self, children):
         cpuct = 1e0
@@ -148,17 +143,17 @@ class MCTS:
 
     def play(self, node, iniT):
         end = False
-        history = []
+        game = []
+        move = 0
 
         while not end:
-            T = np.amax([iniT, 0.1])
-            history.append(node)
+            T = iniT if move < 12 else 0.1
             self.explore(node)
-            a = self.select_action(node, T)
+            a, p = self.select_action(node, T)
+            game.append([node, p])
             node = node.children[a]
             end, winner = self.game.check_end(node)
 
-            # Temperature is reduced to make deterministic moves as game advances.
-            iniT -= 0.2
+            move += 1
 
-        return history, winner
+        return game, winner
