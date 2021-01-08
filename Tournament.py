@@ -11,10 +11,12 @@ from Node import Node
 def tournament(agent1, agent2, NGAMES=100, mcts_games=50):
 
     dnn1 = DNN()
-    dnn1.load_state_dict(torch.load(agent1))
+    if agent1 != None:
+        dnn1.load_state_dict(torch.load(agent1))
 
     dnn2 = DNN()
-    dnn2.load_state_dict(torch.load(agent2))
+    if agent2 != None:
+        dnn2.load_state_dict(torch.load(agent2))
 
     dnn1_wins = 0
     dnn2_wins = 0
