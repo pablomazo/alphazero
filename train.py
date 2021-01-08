@@ -93,5 +93,6 @@ if __name__ == "__main__":
                 # Current player is better:
                 dnn_best.load_state_dict(dnn.state_dict())
                 dnn.save_checkpoint(name='best.pth')
+                dnn.save_checkpoint(name='checkpoint_{}.pth'.format(episode))
 
         print('Episode, Loss, replay_memory len:', episode, loss, len(replay_memory))
