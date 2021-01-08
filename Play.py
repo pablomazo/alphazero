@@ -23,7 +23,7 @@ while p1 != 0 and p1 != 1:
     p1 = int(input('0: Máquina juega primero; 1: Humano juega primero '))
 player1 = dnn1
 
-mcts1 = MCTS(game, player1, ngames=50)
+mcts1 = MCTS(game, player1, ngames=200)
 end = False
 player = -1
 node = Node(game.init_state, 1, player)
@@ -34,7 +34,7 @@ while not end:
     if p1 == 0:
         if player == -1:
             mcts1.explore(node)
-            a = mcts1.select_action(node, 0.1)
+            a, p = mcts1.select_action(node, 0.01)
         elif player == 1:
             avail = game.avail_actions(node)
             a = None
@@ -48,7 +48,7 @@ while not end:
     if p1 == 1:
         if player == 1:
             mcts1.explore(node)
-            a = mcts1.select_action(node, 0.1)
+            a, p = mcts1.select_action(node, 0.01)
         elif player == -1:
             avail = game.avail_actions(node)
             a = None
