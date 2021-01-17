@@ -81,18 +81,25 @@ class MCTS:
 
         return v * node.player
 
-    def select_action(self, node, temperature):
-        policy = self.eval_policy(node, temperature)
-        Nact = len(policy)
+    def select_action(self, node, T):
+        policy = self.eval_policy(node, T)
+        Nact = policy.shape[0]
 
         a_idx = np.random.choice(Nact, p=policy)
 
         return a_idx, policy
 
-    def eval_policy(self, node, temperature):
-        N = [child.N**(1e0/temperature) for child in node.children]
-        Nall = sum(N)
-        policy = [float(N_a / Nall) for N_a in N]
+    def eval_policy(self, node, T):
+        if T == 0:
+            N = np.array([child.N for child in node.children])
+            p = np.argmax(N)
+            policy = np.zeros(N.shape[0])
+            policy[p] = 1e0
+        else:
+            N = np.array([child.N**(1e0/T) for child in node.children])
+            Nall = np.sum(N)
+            policy = N / Nall
+
         return policy
 
     def Uval(self, children):
@@ -147,12 +154,12 @@ class MCTS:
         move = 0
 
         while not end:
-            T = iniT if move < 12 else 0.1
+            T = iniT
             self.explore(node)
             a, p = self.select_action(node, T)
             game.append([node, p])
             node = node.children[a]
-            end, winner = self.game.check_end(node)
+            end, winner = node.end , node.v
 
             move += 1
 
