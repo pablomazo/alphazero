@@ -20,15 +20,14 @@ torch.set_num_threads(1)
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--episodes", type=int, default=100, help="Number of episodes in training process.")
-    parser.add_argument("--ngames", type=int, default=50, help="Number of self-play games in each MCTS.")
+    parser.add_argument("--ngames", type=int, default=200, help="Number of self-play games in each MCTS.")
     parser.add_argument("--games_per_episode", type=int, default=100, help="Number of self-play games before each training episode.")
-    parser.add_argument("--tournament_freq", type=int, default=10, help="Frequency, in episodes, to make tournament between current player and best player.")
+    parser.add_argument("--tournament_freq", type=int, default=1, help="Frequency, in episodes, to make tournament between current player and best player.")
     parser.add_argument("--batch_size", type=int, default=30, help="Batch size.")
-    parser.add_argument("--nbatch", type=int, default=30, help="Number of batches at each epoch.")
+    parser.add_argument("--nbatch", type=int, default=40, help="Number of batches at each epoch.")
     parser.add_argument("--nepochs", type=int, default=2000, help="Number of epochs")
     parser.add_argument("--lr", type=float, default=0.001, help="learning rate")
-    parser.add_argument("--mom", type=float, default=0.9, help="momentum")
-    parser.add_argument("--capacity", type=int, default=10000, help="Maximum number of datapoints in replaymemory.")
+    parser.add_argument("--capacity", type=int, default=5000, help="Maximum number of datapoints in replaymemory.")
     parser.add_argument("--replay_start_size", type=int, default=100, help="Minimum number of datapoint to start training.")
     args = parser.parse_args()
 
@@ -67,7 +66,7 @@ if __name__ == "__main__":
 
     replay_memory = ReplayMemory(args.capacity, args.replay_start_size)
 
-    optimizer = torch.optim.SGD(dnn.parameters(), lr=args.lr, momentum=args.mom, weight_decay=1e-4)
+    optimizer = torch.optim.AdamW(dnn.parameters(), lr=args.lr, weight_decay=1e-4)
 
     trainer = Trainer(args.nepochs, args.nbatch, args.batch_size)
 
@@ -89,7 +88,7 @@ if __name__ == "__main__":
             # Make tournament between the two models:
             nwin1, nwin2, draw = Tournament.tournament('checkpoint.pth', 'best.pth', NGAMES=100, mcts_games=args.ngames)
 
-            if nwin1 > nwin2:
+            if nwin1 >= 0.55:
                 # Current player is better:
                 dnn_best.load_state_dict(dnn.state_dict())
                 dnn.save_checkpoint(name='best.pth')
