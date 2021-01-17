@@ -26,6 +26,7 @@ class Trainer:
         if len(memory) < memory.REPLAY_START_SIZE:
             return
 
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=800, gamma=0.1)
         # Training process is run for self.nepochs epochs.
         for epoch in range(self.nepochs):
             loss = 0
@@ -38,6 +39,7 @@ class Trainer:
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            scheduler.step()
 
             loss /= self.mini_batch
             loss = loss.data.item()
@@ -58,5 +60,3 @@ class Trainer:
 
         loss = self.loss_fn(z,v,policy,net_pol)
         return loss
-
-        return loss.data.item()
