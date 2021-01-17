@@ -51,7 +51,7 @@ def self_play_game(best_model):
             a[act] = p[i]
         w = torch.tensor([winner*node.player], dtype=torch.float)
 
-        replay_memory.add(node.state, a, w)
+        replay_memory.add(node.state.reshape([-1]), a, w)
 
     return winner
 
@@ -78,6 +78,9 @@ if __name__ == "__main__":
                 print('Starting {} self play game'.format(igame))
             # Self plays use the best current policy.
             w = self_play_game(dnn_best)
+
+        # Deduplicate data:
+        replay_memory.deduplicate()
 
         # Train
         loss = trainer.train(dnn, optimizer, replay_memory)
