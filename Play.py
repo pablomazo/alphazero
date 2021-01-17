@@ -12,9 +12,7 @@ from Node import Node
 dnn1 = DNN()
 dnn1.load_state_dict(torch.load('best.pth'))
 
-player1_wins = 0
-player2_wins = 0
-draw = 0
+T = 0
 
 game = Game()
 
@@ -34,7 +32,7 @@ while not end:
     if p1 == 0:
         if player == -1:
             mcts1.explore(node)
-            a, p = mcts1.select_action(node, 0.01)
+            a, p = mcts1.select_action(node, T)
         elif player == 1:
             avail = game.avail_actions(node)
             a = None
@@ -48,7 +46,7 @@ while not end:
     if p1 == 1:
         if player == 1:
             mcts1.explore(node)
-            a, p = mcts1.select_action(node, 0.01)
+            a, p = mcts1.select_action(node, T)
         elif player == -1:
             avail = game.avail_actions(node)
             a = None
