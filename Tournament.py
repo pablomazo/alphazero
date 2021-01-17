@@ -9,7 +9,7 @@ from MCTS import MCTS
 from Node import Node
 
 def tournament(agent1, agent2, NGAMES=100, mcts_games=50):
-
+    T = 0
     dnn1 = DNN()
     if agent1 != None:
         dnn1.load_state_dict(torch.load(agent1))
@@ -44,14 +44,14 @@ def tournament(agent1, agent2, NGAMES=100, mcts_games=50):
         while not end:
             if node1.player == 1:
                 mcts1.explore(node1)
-                a, p = mcts1.select_action(node1, 0.1)
+                a, p = mcts1.select_action(node1, T)
 
                 if node2.children == []:
                     mcts2.explore(node2)
 
             elif node1.player == -1:
                 mcts2.explore(node2)
-                a, p = mcts2.select_action(node2, 0.1)
+                a, p = mcts2.select_action(node2, T)
 
                 if node1.children == []:
                     mcts1.explore(node1)
@@ -59,7 +59,7 @@ def tournament(agent1, agent2, NGAMES=100, mcts_games=50):
             # To use previous searches on nodes.
             node1 = node1.children[a]
             node2 = node2.children[a]
-            end, w = game.check_end(node1)
+            end, w = node1.end, node1.v
 
         if w == 1:
             if p1 == 0:
