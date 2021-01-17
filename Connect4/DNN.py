@@ -7,8 +7,8 @@ class DNN(nn.Module):
         # Net structure from https://codebox.net/pages/connect4
         super(DNN, self).__init__()
         self.conv1 = nn.Conv2d(1, 128, (4,4)) # Padding to keep same input size.
-        self.l1 = nn.Linear(1536, 64)
-        self.l2 = nn.Linear(64, 64)
+        self.l1 = nn.Linear(1536, 164)
+        self.l2 = nn.Linear(164, 64)
         self.l3 = nn.Linear(64, 7)
         self.l4 = nn.Linear(64, 1)
         self.flatten = nn.Flatten()
