@@ -47,7 +47,7 @@ def self_play_game(best_model):
     # Save play in replaymemory
     for node, p in g:
         avail = game.avail_actions(node)
-        a = torch.tensor([0]*game.nactions, dtype=torch.long)
+        a = torch.zeros(game.nactions)
         for i, act in enumerate(avail):
             a[act] = p[i]
         w = torch.tensor([winner*node.player], dtype=torch.float)
